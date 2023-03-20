@@ -78,8 +78,8 @@ export const getIngredients = async () => {
 }
 
 //TODO: review this
-export const updateIngredient = async (data: object) => {
-    const response = await fetch(`${port}/api/ingredients`, {
+export const updateIngredient = async (data: object, id: string) => {
+    const response = await fetch(`${port}/api/ingredients/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'

@@ -11,7 +11,6 @@ const routeHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const handleCase: ResponseFuncs = {
         DELETE: async (req: NextApiRequest, res: NextApiResponse) => {
-			console.log('Holaaaa')
 			await connect(); // connect to database
 			return await deleteIngredient(req, res);
 		},

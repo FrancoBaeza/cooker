@@ -49,7 +49,7 @@ export default function Show({ ingredient, setShowIngredient, setEditIngredient 
             await api.deleteIngredient(ingredient._id);
             await fetchIngredients();
             close();
-            setAlert("Ingredient deleted successfully", "success");
+            setAlert("Ingredient deleted successfully", "danger");
         } catch (error) {
             console.log(error);
         }

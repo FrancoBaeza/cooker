@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 import type { ReactElement } from "react";
 import { useState } from "react";
 
-import Recipies from "@/components/Recipies";
+import Recipies from "@/components/recipies/Recipies";
 import Ingredients from "@/components/ingredients/Ingredients";
 
 const Account: NextPageWithLayout = () => {

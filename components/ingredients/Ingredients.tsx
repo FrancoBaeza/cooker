@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { TailSpin } from "react-loader-spinner";
+
 import * as api from "@/utils/api";
 import { Ingredient } from "@/utils/types";
 import { useAlertStore } from "@/stores/alertStore";
@@ -14,14 +16,20 @@ export default function Ingredients() {
     const [ingredientsFilter, setIngredientsFilter] = useState("");
 
     // getting the ingredients store functions
-    const fetchIngredients = useIngredientStore((state) => state.fetchIngredients);
+    const fetchIngredients = useIngredientStore(
+        (state) => state.fetchIngredients
+    );
     const ingredients = useIngredientStore((state) => state.ingredients);
     const ingredientsSeted = useIngredientStore((state) => state.seted);
 
     // getting all the ingredients
     useEffect(() => {
         // if i already setead the ingredients i dont need to get them again
-        if (filter === "ingredients" && ingredients.length === 0 && !ingredientsSeted) {
+        if (
+            filter === "ingredients" &&
+            ingredients.length === 0 &&
+            !ingredientsSeted
+        ) {
             const getIngredients = async () => {
                 await fetchIngredients();
             };
@@ -42,7 +50,6 @@ export default function Ingredients() {
 
     // variable to edit the ingredient
     const [editIngredient, setEditIngredient] = useState(false);
-
 
     // use effect to prvent scrolling when showing an ingredient
     useEffect(() => {
@@ -183,32 +190,66 @@ export default function Ingredients() {
                     <div className="flex justify-center gap-2">
                         <input
                             placeholder="Search a ingredient by name..."
-                            onChange={(e) => setIngredientsFilter(e.target.value)}
+                            onChange={(e) =>
+                                setIngredientsFilter(e.target.value)
+                            }
                             type="text"
                             className="h-[45px] w-[400px] rounded-md bg-transparent border-base-secondary border-2 px-4 text-lg font-primary outline-0 placeholder:text-slate-800 placeholder:text-base"
                         />
                     </div>
 
                     <div className="w-[500px] max-h-[540px] overflow-y-scroll flex flex-col gap-5 mt-5 scrollbar-none">
-                        {ingredients.filter(i => ingredientsFilter !== "" ? i.name.includes(ingredientsFilter) : true).map((ingredient) => (
-                            <Result
-                                key={ingredient._id}
-                                name={ingredient.name}
-                                action={() => { setIngredient(ingredient); setShowIngredient(true); }}
-                            />
-                        ))}
+                        {ingredients.length > 0 ? (
+                            ingredients
+                                .filter((i) =>
+                                    ingredientsFilter !== ""
+                                        ? i.name.includes(ingredientsFilter)
+                                        : true
+                                )
+                                .map((ingredient) => (
+                                    <Result
+                                        key={ingredient._id}
+                                        name={ingredient.name}
+                                        action={() => {
+                                            setIngredient(ingredient);
+                                            setShowIngredient(true);
+                                        }}
+                                    />
+                                ))
+                        ) : (
+                            <div className="w-full h-[300px] grid place-content-center ">
+                                <TailSpin
+                                    height="80"
+                                    width="80"
+                                    color="#00718F"
+                                    ariaLabel="tail-spin-loading"
+                                    radius="1"
+                                    wrapperStyle={{}}
+                                    wrapperClass=""
+                                    visible={true}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
 
             {/* show ingredient */}
             {showIngredient && (
-                <Show ingredient={ingredient} setShowIngredient={setShowIngredient} setEditIngredient={setEditIngredient} />
+                <Show
+                    ingredient={ingredient}
+                    setShowIngredient={setShowIngredient}
+                    setEditIngredient={setEditIngredient}
+                />
             )}
 
             {/* edit ingredient*/}
             {editIngredient && (
-                <Edit ingredient={ingredient} setEditIngredient={setEditIngredient} />
+                <Edit
+                    ingredient={ingredient}
+                    setEditIngredient={setEditIngredient}
+                    setShowIngredient={setShowIngredient}
+                />
             )}
         </>
     );
