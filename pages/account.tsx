@@ -3,11 +3,11 @@ import Layout from "@/components/Layout";
 import type { ReactElement } from "react";
 import { useState } from "react";
 
-import Recipies from "@/components/recipies/Recipies";
+import Recipes from "@/components/recipes/Recipes";
 import Ingredients from "@/components/ingredients/Ingredients";
 
 const Account: NextPageWithLayout = () => {
-    const [filter, setFilter] = useState("recipies");
+    const [filter, setFilter] = useState("recipes");
     return (
         <div className="flex flex-col items-center min-h-screen">
             <div className="h-[250px] w-full bg-base-primary flex flex-col items-center text-slate-200 py-10">
@@ -19,14 +19,14 @@ const Account: NextPageWithLayout = () => {
                 {/* filtros */}
                 <div className="flex flex-row gap-5 mt-5">
                     <button
-                        onClick={() => setFilter("recipies")}
+                        onClick={() => setFilter("recipes")}
                         className={` text-center w-[150px] py-2 text-lg shadow-md rounded-md border-[2px] duration-300 ${
-                            filter === "recipies"
+                            filter === "recipes"
                                 ? "border-base-secondary bg-base-secondary/50"
                                 : "border-slate-300 hover:bg-slate-300/50"
                         } `}
                     >
-                        Recipies
+                        Recipes
                     </button>
                     <button
                         onClick={() => setFilter("ingredients")}
@@ -41,7 +41,7 @@ const Account: NextPageWithLayout = () => {
                 </div>
             </div>
             <div className="w-[600px] flex flex-col items-center p-5">
-                {filter === "recipies" && <Recipies />}
+                {filter === "recipes" && <Recipes />}
                 {filter === "ingredients" && <Ingredients />}
             </div>
         </div>

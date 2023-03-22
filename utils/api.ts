@@ -77,7 +77,6 @@ export const getIngredients = async () => {
     return value;
 }
 
-//TODO: review this
 export const updateIngredient = async (data: object, id: string) => {
     const response = await fetch(`${port}/api/ingredients/${id}`, {
         method: 'PUT',
@@ -112,4 +111,25 @@ export const deleteIngredient = async (id: string) => {
     }
 
     return 'Success';
+}
+
+///////////////////////// RECIPES
+
+export const createRecipe = async (data: object) => {
+    const response = await fetch(`${port}/api/recipes`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+
+    const value = await response.json();
+
+    if (response.status !== 201) {
+        console.log(`[${new Date().toLocaleString()}]- Fail to create recipe (api call): ${response.status} - ${response.statusText}`)
+        return Promise.reject(value);
+    }
+
+    return value;
 }

@@ -11,9 +11,9 @@ interface Recipe {
 export default function Home() {
     const [filter, setFilter] = useState("name");
     const [search, setSearch] = useState("");
-    const [foundRecipies, setFoundRecipies] = useState([] as Recipe[]);
+    const [foundRecipes, setFoundRecipes] = useState([] as Recipe[]);
 
-    const recipies = [
+    const recipes = [
         {
             name: "Pasta",
             otherNames: ["Fideos", "Spaghetti"],
@@ -35,12 +35,12 @@ export default function Home() {
         },
     ];
 
-    const searchRecipies = () => {
+    const searchRecipes = () => {
         if (filter === "name") {
-            const found = recipies.filter((recipe) =>
+            const found = recipes.filter((recipe) =>
                 recipe.name.toLowerCase().includes(search.toLowerCase())
             );
-            setFoundRecipies(found);
+            setFoundRecipes(found);
         }
     };
 
@@ -90,7 +90,7 @@ export default function Home() {
                         className="h-[50px] w-[400px] rounded-md bg-transparent border-slate-300 border-2 px-4 text-lg font-primary outline-0 placeholder:text-slate-200 placeholder:text-base"
                     />
                     <button
-                        onClick={searchRecipies}
+                        onClick={searchRecipes}
                         className="w-[50px] h-[50px] border-2 rounded-md border-base-secondary grid place-items-center hover:bg-base-secondary/50 duration-300"
                     >
                         <Icon
@@ -103,14 +103,14 @@ export default function Home() {
 
             {/* results */}
             <div className="flex-grow w-[600px] flex flex-col items-center">
-                {foundRecipies.length !== 0 ? (
+                {foundRecipes.length !== 0 ? (
                     <>
                         <h2 className="pt-4 font-primary text-2xl font-semibold text-slate-900">
                             What we found:
                         </h2>
 
                         <div className="w-[500px] flex flex-col gap-5 mt-5">
-                            {foundRecipies.map((recipe, i) => (
+                            {foundRecipes.map((recipe, i) => (
                                 <Result key={i} name={recipe.name} action={nada} />
                             ))}
                         </div>

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const RecipieSchema = new mongoose.Schema({
+const RecipeSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "Please provide a name"],
@@ -18,6 +18,14 @@ const RecipieSchema = new mongoose.Schema({
     duration: {
         type: Number,
         required: [true, "Please provide a duration"],
+        min: [1, "Duration must be at least 1 minute"],
+        max: [500, "Duration must be at most 500 minutes"],
+    },
+    difficulty: {
+        type: Number,
+        required: [true, "Please provide a difficulty"],
+        min: [1, "Difficulty must be at least 1"],
+        max: [10, "Difficulty must be at most 10"],
     },
 
     active: {
@@ -30,11 +38,11 @@ const RecipieSchema = new mongoose.Schema({
 ////////////////////////// Middleware //////////////////////////
 
 // remove the __v propierty after querying the database
-RecipieSchema.pre(/^find/, function (next) {
+RecipeSchema.pre(/^find/, function (next) {
     this.select("-__v");
     next();
 });
 
 
-export default mongoose.models.Recipie ||
-    mongoose.model("Recipie", RecipieSchema);
+export default mongoose.models.Recipe ||
+    mongoose.model("Recipe", RecipeSchema);
