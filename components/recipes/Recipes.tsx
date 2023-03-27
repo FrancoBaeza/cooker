@@ -1,15 +1,29 @@
 import { useState, useEffect } from "react";
 
-import { Ingredient } from "@/utils/types";
+import { TailSpin } from "react-loader-spinner";
+
+import { Ingredient, Recipe, User } from "@/utils/types";
 import { useIngredientStore } from "@/stores/ingredientStore";
 import { useAlertStore } from "@/stores/alertStore";
+import { useUserStore } from "@/stores/userStore";
 import * as api from "@/utils/api";
 
 import AddIngredient from "./AddIngredient";
 import Icon from "../Icon";
+import Result from "../Result";
+import Show from "./Show";
 
-export default function Recipes() {
+export default function Recipes({
+    user,
+    userRecipes,
+}: {
+    user: User;
+    userRecipes: Recipe[];
+}) {
     const [filter, setFilter] = useState("recipes");
+    const [recipe, setRecipe] = useState({} as Recipe);
+    const [showRecipe, setShowRecipe] = useState(false);
+    const [editRecipe, setEditRecipe] = useState(false);
 
     // recipie attributes
     const [name, setName] = useState("");
@@ -39,6 +53,7 @@ export default function Recipes() {
                 duration,
                 difficulty,
                 ingredients: ingredientsList,
+                user: user ? user._id : "",
             });
             setName("");
             setDescription("");
@@ -61,6 +76,10 @@ export default function Recipes() {
                 setAlert(error.message, "danger");
             }
         }
+    };
+
+    const nada = () => {
+        console.log("nada");
     };
 
     return (
@@ -150,7 +169,7 @@ export default function Recipes() {
                             <div className="flex flex-col w-full">
                                 <p
                                     className={`font-primary font-semibold text-base ${
-                                        error === "description"
+                                        error === "duration"
                                             ? "text-red-600"
                                             : "text-slate-500"
                                     } `}
@@ -158,13 +177,15 @@ export default function Recipes() {
                                     Duration (min)
                                 </p>
                                 <input
-                                    onChange={(e) => setDuration(e.target.value)}
+                                    onChange={(e) =>
+                                        setDuration(e.target.value)
+                                    }
                                     type="number"
                                     min="1"
                                     max="500"
                                     value={duration}
                                     className={`w-full bg-transparent rounded-md border-2 outline-0 px-2 py-2 font-primary text-sm ${
-                                        error === "description"
+                                        error === "duration"
                                             ? "border-red-600"
                                             : "border-slate-500"
                                     } `}
@@ -175,7 +196,7 @@ export default function Recipes() {
                             <div className="flex flex-col w-full">
                                 <p
                                     className={`font-primary font-semibold text-base ${
-                                        error === "description"
+                                        error === "difficulty"
                                             ? "text-red-600"
                                             : "text-slate-500"
                                     } `}
@@ -191,7 +212,7 @@ export default function Recipes() {
                                     max="10"
                                     value={difficulty}
                                     className={`w-full bg-transparent rounded-md border-2 outline-0 px-2 py-2 font-primary text-sm ${
-                                        error === "description"
+                                        error === "difficulty"
                                             ? "border-red-600"
                                             : "border-slate-500"
                                     } `}
@@ -267,7 +288,19 @@ export default function Recipes() {
             )}
 
             {/* your recipes */}
-            {filter === "recipes" && <div className=""></div>}
+            {filter === "recipes" && (
+                <div className="w-full flex flex-col items-center gap-8">
+                    <h2 className=" font-primary text-xl font-semibold text-slate-800">
+                        Your recipies
+                    </h2>
+
+                    <div className="w-[500px] flex flex-col gap-5 mt-5">
+                        {userRecipes.map((recipe, i) => (
+                        <Result key={i} name={recipe.name} action={() => { setRecipe(recipe); setShowRecipe(true) }} />
+                    ))}
+                    </div>
+                </div>
+            )}
 
             {/* add new ingredient */}
             {addIngredients && (
@@ -275,6 +308,15 @@ export default function Recipes() {
                     setAddIngredients={setAddIngredients}
                     submit={submitIngredients}
                     ingredientsList={ingredientsList}
+                />
+            )}
+
+            {/* show recipe */}
+            {showRecipe && (
+                <Show
+                    setShowRecipe={setShowRecipe}
+                    setEditRecipe={setEditRecipe}
+                    recipe={recipe}
                 />
             )}
         </>

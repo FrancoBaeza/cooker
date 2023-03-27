@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { TailSpin } from "react-loader-spinner";
+
 import { useIngredientStore } from "@/stores/ingredientStore";
 import SelectIngredient from "./SelectIngredient";
 import { Ingredient } from "@/utils/types";
@@ -16,7 +18,6 @@ export default function AddIngredient({
     submit,
     ingredientsList,
 }: AddIngredientProps) {
-
     // getting the ingredients store functions
     const fetchIngredients = useIngredientStore(
         (state) => state.fetchIngredients
@@ -44,9 +45,7 @@ export default function AddIngredient({
         setTimeout(() => {
             setAddIngredients(false);
         }, 300);
-    }
-
-
+    };
 
     const [start, setStart] = useState(false);
 
@@ -54,8 +53,10 @@ export default function AddIngredient({
     useEffect(() => {
         setStart(true);
 
-        if(ingredientsList.length > 0) {
-            const added = ingredients.filter((i) => ingredientsList.includes(i._id));
+        if (ingredientsList.length > 0) {
+            const added = ingredients.filter((i) =>
+                ingredientsList.includes(i._id)
+            );
             setAddedIngredients(added);
         }
     }, []);
@@ -108,37 +109,59 @@ export default function AddIngredient({
                     Available
                 </h3>
                 <input
-                placeholder="Search Ingredients"
+                    placeholder="Search Ingredients"
                     className={`w-full self-center bg-transparent rounded-md border-slate-500 border-2 outline-0 px-2 py-1 font-primary text-sm placeholder:text-slate-700 text-slate-700`}
                     type="text"
                     value={addIngredientsFilter}
                     onChange={(e) => setAddIngredientsFilter(e.target.value)}
                 />
                 <div className="flex flex-wrap gap-2">
-                    {ingredients.length > 0 && ingredients
-                        .filter((ingre) =>
-                            addIngredientsFilter === '' || ingre.name.includes(addIngredientsFilter)
-                        )
-                        .filter(
-                            (ing) =>
-                                !addedIngredients.find(
-                                    (aing) => aing._id === ing._id
-                                )
-                        )
-                        .map((i) => (
-                            <SelectIngredient
-                                added={false}
-                                key={i._id}
-                                name={i.name}
-                                id={i._id}
-                                click={() => addIngredient(i._id)}
+                    {ingredients.length > 0 ? (
+                        ingredients
+                            .filter(
+                                (ingre) =>
+                                    addIngredientsFilter === "" ||
+                                    ingre.name.includes(addIngredientsFilter)
+                            )
+                            .filter(
+                                (ing) =>
+                                    !addedIngredients.find(
+                                        (aing) => aing._id === ing._id
+                                    )
+                            )
+                            .map((i) => (
+                                <SelectIngredient
+                                    added={false}
+                                    key={i._id}
+                                    name={i.name}
+                                    id={i._id}
+                                    click={() => addIngredient(i._id)}
+                                />
+                            ))
+                    ) : (
+                        <div className="w-full h-[200px] grid place-items-center">
+                            <TailSpin
+                                height="60"
+                                width="60"
+                                color="#82c126"
+                                ariaLabel="tail-spin-loading"
+                                radius="1"
+                                visible={true}
                             />
-                        ))}
+                        </div>
+                    )}
                 </div>
                 <div className="w-full h-full flex-grow flex flex-col-reverse items-center">
-                    <button onClick={() => {submit(addedIngredients); close()}} className=" w-[80px] border-2 border-green-600 bg-green-500 px-2 font-semibold text-sm text-slate-200 font-primary rounded-md duration-300 hover:bg-green-600">Save</button>
+                    <button
+                        onClick={() => {
+                            submit(addedIngredients);
+                            close();
+                        }}
+                        className=" w-[80px] border-2 border-green-600 bg-green-500 px-2 font-semibold text-sm text-slate-200 font-primary rounded-md duration-300 hover:bg-green-600"
+                    >
+                        Save
+                    </button>
                 </div>
-
             </div>
         </div>
     );

@@ -11,3 +11,18 @@ export interface Ingredient {
 	name: string;
 	description: string;
 }
+
+export interface User {
+	_id: string;
+	name: string;
+	email: string;
+}
+
+export interface Recipe {
+	_id: string;
+	name: string;
+	description: string;
+	ingredients: Ingredient[];
+	difficulty: string;
+	duration: number;
+}

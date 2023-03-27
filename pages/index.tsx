@@ -2,13 +2,20 @@ import { useState } from "react";
 
 import Icon from "@/components/Icon";
 import Result from "@/components/Result";
+import { withSessionSsr } from "@/utils/withSession";
+import { User } from "@/utils/types";
+import * as api from "@/utils/api";
 
 interface Recipe {
     name: string;
     otherNames?: string[];
 }
 
-export default function Home() {
+interface HomeProps {
+    user?: User;
+}
+
+export default function Home({ user }: HomeProps) {
     const [filter, setFilter] = useState("name");
     const [search, setSearch] = useState("");
     const [foundRecipes, setFoundRecipes] = useState([] as Recipe[]);
@@ -130,3 +137,24 @@ export default function Home() {
         </div>
     );
 }
+// TODO: esto tal vez no sirve
+// export const getServerSideProps = withSessionSsr(
+//     async function getServerSideProps({ req }) {
+//         const user = req.session.user;
+
+//         if(user){
+//             const foundUser = await api.getUser(user.userId)
+//             return {
+//                 props: {
+//                     user: foundUser,
+//                 },
+//             };
+//         } else {
+//             return {
+//                 props: {
+//                     user: {},
+//                 },
+//             };
+//         }
+//     }
+// );

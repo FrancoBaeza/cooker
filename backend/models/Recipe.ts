@@ -9,12 +9,15 @@ const RecipeSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please provide a description"],
     },
-    ingredients: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Ingredient",
-        },
-    ],
+    ingredients: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Ingredient",
+            },
+        ],
+        default: [],
+    },
     duration: {
         type: Number,
         required: [true, "Please provide a duration"],
@@ -27,7 +30,11 @@ const RecipeSchema = new mongoose.Schema({
         min: [1, "Difficulty must be at least 1"],
         max: [10, "Difficulty must be at most 10"],
     },
-
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: [true],
+    },
     active: {
         type: Boolean,
         default: true,
@@ -40,6 +47,18 @@ const RecipeSchema = new mongoose.Schema({
 // remove the __v propierty after querying the database
 RecipeSchema.pre(/^find/, function (next) {
     this.select("-__v");
+
+    console.log('HOLAAAAAAAAAAAAAAAAAAAAA- ----------------------------------------------------')
+    this.populate({
+        path: "ingredients",
+        select: "-__v",
+    });
+
+    // this.populate({
+    //     path: "user",
+    //     select: "-__v",
+    // });
+
     next();
 });
 

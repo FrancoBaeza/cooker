@@ -79,8 +79,8 @@ export default function Icon(props: { icon: string; className?: string }) {
                     className={className}
                     clipRule="evenodd"
                     fillRule="evenodd"
-                    stroke-linejoin="round"
-                    stroke-miterlimit="2"
+                    strokeLinejoin="round"
+                    strokeMiterlimit="2"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                 >

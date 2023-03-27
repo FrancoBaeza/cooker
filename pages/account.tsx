@@ -1,13 +1,17 @@
 import type { NextPageWithLayout } from "./_app";
 import Layout from "@/components/Layout";
-import type { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import { useState } from "react";
 
 import Recipes from "@/components/recipes/Recipes";
 import Ingredients from "@/components/ingredients/Ingredients";
+import * as api from "@/utils/api";
+import { withSessionSsr } from "@/utils/withSession";
 
-const Account: NextPageWithLayout = () => {
+
+const Account: NextPageWithLayout = ({ user, userRecipes }: any) => {
     const [filter, setFilter] = useState("recipes");
+    
     return (
         <div className="flex flex-col items-center min-h-screen">
             <div className="h-[250px] w-full bg-base-primary flex flex-col items-center text-slate-200 py-10">
@@ -41,15 +45,39 @@ const Account: NextPageWithLayout = () => {
                 </div>
             </div>
             <div className="w-[600px] flex flex-col items-center p-5">
-                {filter === "recipes" && <Recipes />}
+                {filter === "recipes" && <Recipes user={user} userRecipes={userRecipes} />}
                 {filter === "ingredients" && <Ingredients />}
             </div>
         </div>
     );
-}
+};
 
 Account.getLayout = function getLayout(page: ReactElement) {
     return <Layout>{page}</Layout>;
 };
 
 export default Account;
+
+export const getServerSideProps = withSessionSsr(
+    async function getServerSideProps({ req }) {
+        const id = req.session.user?.userId;
+        if(id){
+            const user = await api.getUser(id);
+            const userRecipes = await api.getUserRecipes(id);
+            return {
+                props: {
+                    user: user.data.data,
+                    userRecipes: userRecipes.data.recipes,
+                },
+            };
+
+        } else {
+            return {
+                redirect: {
+                    destination: "/login",
+                    permanent: false,
+                },
+            };
+        }
+    }
+);

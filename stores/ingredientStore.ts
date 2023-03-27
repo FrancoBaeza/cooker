@@ -20,6 +20,7 @@ export const useIngredientStore = create<IngredientState>()(
             fetchIngredients: async () => {
                 const ingredients = await api.getIngredients();
                 set({ ingredients: ingredients.data.data, seted: true });
+                return ingredients;
             }
         })
     )

@@ -47,7 +47,7 @@ export const deleteOne = (Model: Model<Document>) =>
 export const getOne = (Model: Model<Document>) =>
     catchAsync(
         async (req: NextApiRequest, res: NextApiResponse, next: Function) => {
-            let doc = await Model.findById(req.query.id).select('-__v');;
+            let doc = await Model.findById(req.query.id).select('-__v');
             
             if (!doc) {
                 throw new AppError("No document found with that id", 404);

@@ -38,6 +38,26 @@ export const register = async (data : object) => {
     return value;
 }
 
+///////////////////////// USERS
+
+export const getUser = async (id: string) => {
+    const response = await fetch(`${port}/api/users/${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+    
+    const value = await response.json();
+
+    if (response.status !== 200) {
+        console.log(`[${new Date().toLocaleString()}]- Fail to get user (api call): ${response.status} - ${response.statusText}`)
+        return Promise.reject(value);
+    }
+
+    return value;
+}
+
 ///////////////////////// INGREDIENTS
 
 export const createIngredient = async (data: object) => {
@@ -128,6 +148,26 @@ export const createRecipe = async (data: object) => {
 
     if (response.status !== 201) {
         console.log(`[${new Date().toLocaleString()}]- Fail to create recipe (api call): ${response.status} - ${response.statusText}`)
+        return Promise.reject(value);
+    }
+
+    return value;
+}
+
+export const getUserRecipes = async (userId: string) => {
+    const response = await fetch(`${port}/api/users/${userId}/recipes`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+
+    const value = await response.json();
+
+    console.log(`[${new Date().toLocaleString()}]- API RESPONSE: `, value)
+
+    if (response.status !== 200) {
+        console.log(`[${new Date().toLocaleString()}]- Fail to get user recipes (api call): ${response.status} - ${response.statusText}`)
         return Promise.reject(value);
     }
 

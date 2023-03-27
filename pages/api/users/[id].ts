@@ -3,20 +3,16 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { connect } from '@/utils/connection'
 import { ResponseFuncs } from "@/utils/types";
 import { withSessionRoute } from "@/utils/withSession";
-import { getAllRecipes, createRecipe } from '@/backend/controllers/RecipeController'
+import { getUser } from '@/backend/controllers/UserController'
 
 const routeHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     // 1) Capture the method
 	const method: keyof ResponseFuncs = req.method as keyof ResponseFuncs;
 
     const handleCase: ResponseFuncs = {
-        POST: async (req: NextApiRequest, res: NextApiResponse) => {
-			await connect(); // connect to database
-			return await createRecipe(req, res);
-		},
         GET: async (req: NextApiRequest, res: NextApiResponse) => {
 			await connect(); // connect to database
-			return await getAllRecipes(req, res);
+			return await getUser(req, res);
 		},
     };
 

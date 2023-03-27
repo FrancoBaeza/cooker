@@ -8,7 +8,7 @@ import User from '../models/User'
 declare module "iron-session" {
     interface IronSessionData {
       user?: {
-        user: object;
+        userId: string;
         token: string;
         admin?: boolean;
       };
@@ -61,10 +61,11 @@ export const loginUser = async (req: NextApiRequest, res: NextApiResponse) => {
     // 3) Sign the token
     const token = signToken(user._id);
     user.password = undefined;
+    user.__v = undefined;
     
     // 4) Send response
     req.session.user = {
-        user,
+        userId: user._id,
         token
     }
     await req.session.save();
