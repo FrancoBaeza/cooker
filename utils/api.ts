@@ -173,3 +173,22 @@ export const getUserRecipes = async (userId: string) => {
 
     return value;
 }
+
+export const updateRecipe = async (data: object, id: string) => {
+    const response = await fetch(`${port}/api/recipes/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+
+    const value = await response.json();
+
+    if (response.status !== 200) {
+        console.log(`[${new Date().toLocaleString()}]- Fail to update recipe (api call): ${response.status} - ${response.statusText}`)
+        return Promise.reject(value);
+    }
+
+    return value;
+}

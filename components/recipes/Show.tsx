@@ -87,27 +87,26 @@ export default function Show({
                 <p className="font-primary text-sm font-semibold self-start">
                     Ingredients:{" "}
                 </p>
-                <div className="flex flex-col gap-1 w-full items-start px-2">
+                <div className="flex flex-col gap-1 w-full items-start">
                     {recipe.ingredients.map((ingre) => (
-                        <div key={ingre._id} className="font-primary text-sm font-semibold">- {ingre.name}</div>
-                        // <div
-                        //     key={ingre._id}
-                        //     className=" flex justify-between w-full bg-gray-300 border-gray-400 border-2 px-2 py-1 rounded-md font-primary text-slate-500 font-medium "
-                        // >
-                        //     {ingre.name}
-                        //     <button
-                        //         // onClick={() =>
-                        //         //     setIngredientsList(
-                        //         //         ingredientsList.filter(
-                        //         //             (i) => i !== ingre._id
-                        //         //         )
-                        //         //     )
-                        //         // }
-                        //         className=" px-1 py-0.5 rounded bg-red-500 border-red-600 border-2 hover:bg-red-600 duration-300"
-                        //     >
-                        //         <Icon icon="trashcan" className="w-3" />
-                        //     </button>
-                        // </div>
+                        <div
+                            key={ingre._id}
+                            className=" flex justify-between w-full bg-gray-300 border-gray-400 text-sm border-2 px-2 py-0.5 rounded-md font-primary text-slate-500 font-medium "
+                        >
+                            {ingre.name}
+                            {/* <button
+                                onClick={() =>
+                                    setIngredientsList(
+                                        ingredientsList.filter(
+                                            (i) => i !== ingre._id
+                                        )
+                                    )
+                                }
+                                className=" px-1 py-0.5 rounded bg-red-500 border-red-600 border-2 hover:bg-red-600 duration-300"
+                            >
+                                <Icon icon="trashcan" className="w-3" />
+                            </button> */}
+                        </div>
                     ))}
                 </div>
                 <div className=" w-full flex-grow items-end flex justify-center gap-2">

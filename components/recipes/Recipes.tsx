@@ -12,6 +12,7 @@ import AddIngredient from "./AddIngredient";
 import Icon from "../Icon";
 import Result from "../Result";
 import Show from "./Show";
+import Edit from "./Edit";
 
 export default function Recipes({
     user,
@@ -314,6 +315,15 @@ export default function Recipes({
             {/* show recipe */}
             {showRecipe && (
                 <Show
+                    setShowRecipe={setShowRecipe}
+                    setEditRecipe={setEditRecipe}
+                    recipe={recipe}
+                />
+            )}
+
+            {/* edit recipe */}
+            {editRecipe && (
+                <Edit
                     setShowRecipe={setShowRecipe}
                     setEditRecipe={setEditRecipe}
                     recipe={recipe}
