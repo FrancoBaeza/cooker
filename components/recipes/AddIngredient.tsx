@@ -11,12 +11,14 @@ interface AddIngredientProps {
     setAddIngredients: (op: boolean) => void;
     submit: (ingredients: Ingredient[]) => void;
     ingredientsList: string[];
+    loadFridge?: boolean;
 }
 
 export default function AddIngredient({
     setAddIngredients,
     submit,
     ingredientsList,
+    loadFridge,
 }: AddIngredientProps) {
     // getting the ingredients store functions
     const fetchIngredients = useIngredientStore(
@@ -152,15 +154,28 @@ export default function AddIngredient({
                     )}
                 </div>
                 <div className="w-full h-full flex-grow flex flex-col-reverse items-center">
-                    <button
-                        onClick={() => {
-                            submit(addedIngredients);
-                            close();
-                        }}
-                        className=" w-[80px] border-2 border-green-600 bg-green-500 px-2 font-semibold text-sm text-slate-200 font-primary rounded-md duration-300 hover:bg-green-600"
-                    >
-                        Save
-                    </button>
+                    <div className="flex gap-3">
+                        {loadFridge && (
+                            <button
+                                onClick={() => {
+                                    submit(addedIngredients);
+                                    close();
+                                }}
+                                className=" w-[100px] border-2 border-blue-600 bg-blue-500 px-2 font-semibold text-sm text-slate-200 font-primary rounded-md duration-300 hover:bg-blue-600"
+                            >
+                                Load fridge
+                            </button>
+                        )}
+                        <button
+                            onClick={() => {
+                                submit(addedIngredients);
+                                close();
+                            }}
+                            className=" w-[80px] border-2 border-green-600 bg-green-500 px-2 font-semibold text-sm text-slate-200 font-primary rounded-md duration-300 hover:bg-green-600"
+                        >
+                            Save
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

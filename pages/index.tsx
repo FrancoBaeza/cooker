@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import Link from 'next/link';
-
+import Link from "next/link";
 
 import Icon from "@/components/Icon";
 import Result from "@/components/Result";
 import { withSessionSsr } from "@/utils/withSession";
-import { Recipe, User } from "@/utils/types";
+import { Ingredient, Recipe, User } from "@/utils/types";
 import * as api from "@/utils/api";
 import { useRecipeStore } from "@/stores/recipeStore";
+import { useIngredientStore } from "@/stores/ingredientStore";
 import Show from "@/components/recipes/Show";
+import AddIngredient from "@/components/recipes/AddIngredient";
 
 interface HomeProps {
     user?: User;
@@ -17,6 +18,8 @@ interface HomeProps {
 export default function Home({ user }: HomeProps) {
     const [filter, setFilter] = useState("name");
     const [search, setSearch] = useState("");
+    const [selectIngredients, setSelectIngredients] = useState(false);
+    const [ingredientsList, setIngredientsList] = useState([] as string[]);
     const [foundRecipes, setFoundRecipes] = useState([] as Recipe[]);
 
     const [showRecipe, setShowRecipe] = useState(false);
@@ -25,8 +28,14 @@ export default function Home({ user }: HomeProps) {
     const recipes = useRecipeStore((state) => state.recipes);
     const fetchRecipes = useRecipeStore((state) => state.fetchRecipes);
 
+    const ingredients = useIngredientStore((state) => state.ingredients);
+    const fetchIngredients = useIngredientStore(
+        (state) => state.fetchIngredients
+    );
+
     useEffect(() => {
         fetchRecipes();
+        fetchIngredients();
     }, []);
 
     const searchRecipes = () => {
@@ -38,6 +47,22 @@ export default function Home({ user }: HomeProps) {
         }
     };
 
+    const submitIngredients = (ingredients: Ingredient[]) => {
+        const ids = ingredients.map((i) => i._id);
+        setIngredientsList(ids);
+
+        const found = recipes.filter((recipe) => {
+            return recipe.ingredients.every((i) => ids.includes(i._id));
+        });
+
+        setFoundRecipes(found);
+    };
+
+    const correctFilter = (filter: string) => {
+        setFoundRecipes([]);
+        setFilter(filter);
+    };
+
     const nada = () => {
         console.log("nada");
     };
@@ -47,7 +72,7 @@ export default function Home({ user }: HomeProps) {
             <div className="flex flex-col items-center min-h-screen">
                 {/* header */}
                 <div className="h-[300px] w-full bg-base-primary flex flex-col items-center text-slate-200 ">
-                    <Link href='/account' className="self-end p-0 m-2 mb-6">
+                    <Link href="/account" className="self-end p-0 m-2 mb-6">
                         <Icon
                             icon="user"
                             className="h-8 w-8 cursor-pointer hover:fill-slate-500 duration-300 fill-slate-200"
@@ -62,7 +87,7 @@ export default function Home({ user }: HomeProps) {
                     {/* filtros */}
                     <div className="flex flex-row gap-5 mt-5">
                         <button
-                            onClick={() => setFilter("name")}
+                            onClick={() => correctFilter("name")}
                             className={` text-center w-[150px] py-2 text-lg shadow-md rounded-md border-[2px] duration-300 ${
                                 filter === "name"
                                     ? "border-base-secondary bg-base-secondary/50"
@@ -72,7 +97,7 @@ export default function Home({ user }: HomeProps) {
                             Name
                         </button>
                         <button
-                            onClick={() => setFilter("ingredients")}
+                            onClick={() => correctFilter("ingredients")}
                             className={` text-center w-[150px] py-2 text-lg shadow-md rounded-md border-[2px] duration-300 ${
                                 filter === "ingredients"
                                     ? "border-base-secondary bg-base-secondary/50"
@@ -83,30 +108,98 @@ export default function Home({ user }: HomeProps) {
                         </button>
                     </div>
 
-                    {/* input */}
-                    <div className="flex gap-2 mt-6">
-                        <input
-                            placeholder="Search a recipe by name..."
-                            onChange={(e) => setSearch(e.target.value)}
-                            type="text"
-                            className="h-[50px] w-[400px] rounded-md bg-transparent border-slate-300 border-2 px-4 text-lg font-primary outline-0 placeholder:text-slate-200 placeholder:text-base"
-                        />
-                        <button
-                            onClick={searchRecipes}
-                            className="w-[50px] h-[50px] border-2 rounded-md border-base-secondary grid place-items-center hover:bg-base-secondary/50 duration-300"
-                        >
-                            <Icon
-                                icon="arrow"
-                                className="w-8 h-8 fill-base-secondary"
+                    {filter === "name" ? (
+                        <div className="flex gap-2 mt-6">
+                            {/* input */}
+                            <input
+                                placeholder="Search a recipe by name..."
+                                onChange={(e) => setSearch(e.target.value)}
+                                type="text"
+                                className="h-[50px] w-[400px] rounded-md bg-transparent border-slate-300 border-2 px-4 text-lg font-primary outline-0 placeholder:text-slate-200 placeholder:text-base"
                             />
-                        </button>
-                    </div>
+                            <button
+                                onClick={searchRecipes}
+                                className="w-[50px] h-[50px] border-2 rounded-md border-base-secondary grid place-items-center hover:bg-base-secondary/50 duration-300"
+                            >
+                                <Icon
+                                    icon="arrow"
+                                    className="w-8 h-8 fill-base-secondary"
+                                />
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="flex flex-grow w-full items-center justify-center">
+                            <h2 className="text-2xl font-primary font-semibold">
+                                Tell us what you got
+                            </h2>
+                        </div>
+                    )}
                 </div>
 
                 {/* results */}
-                <div className="flex-grow w-[600px] flex flex-col items-center">
-                    {foundRecipes.length !== 0 ? (
-                        <>
+                {filter === "name" ? (
+                    <div className="flex-grow w-[600px] flex flex-col items-center">
+                        {foundRecipes.length !== 0 ? (
+                            <>
+                                <h2 className="pt-4 font-primary text-2xl font-semibold text-slate-900">
+                                    What we found:
+                                </h2>
+
+                                <div className="w-[500px] flex flex-col gap-5 mt-5">
+                                    {foundRecipes.map((recipe, i) => (
+                                        <Result
+                                            key={i}
+                                            name={recipe.name}
+                                            action={() => {
+                                                setRecipe(recipe);
+                                                setShowRecipe(true);
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            <div className="h-full flex-grow w-[600px] grid place-items-center ">
+                                <span>
+                                    <Icon
+                                        icon="magnifier"
+                                        className="w-28 h-28 fill-slate-900"
+                                    />
+                                    <p className="text-xl font-secondary mt-3 mb-24">
+                                        No search results...
+                                    </p>
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <>
+                        <div className=" w-[350px] flex justify-center flex-col gap-3">
+                            <button
+                                onClick={() => setSelectIngredients(true)}
+                                className="mt-4 bg-slate-400 border-2 border-slate-500 px-3 py-1 font-primary rounded text-slate-200 hover:bg-slate-500 duration-300"
+                            >
+                                Select ingredients
+                            </button>
+
+                            <div className="w-full flex flex-wrap gap-2">
+                                {ingredients
+                                    .filter((ing) =>
+                                        ingredientsList.find(
+                                            (i) => i === ing._id
+                                        )
+                                    )
+                                    .map((ing, i) => (
+                                        <div
+                                            className="duration-300 cursor-pointer flex flex-row items-center gap-1 px-2  border-2  rounded-md font-primary font-medium text-sm text-slate-200 shadow bg-gray-500 border-gray-600"
+                                            key={ing._id}
+                                        >
+                                            {ing.name}
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
+                        <div className="w-[600px} flex justify-center items-center flex-col gap-3">
                             <h2 className="pt-4 font-primary text-2xl font-semibold text-slate-900">
                                 What we found:
                             </h2>
@@ -123,21 +216,9 @@ export default function Home({ user }: HomeProps) {
                                     />
                                 ))}
                             </div>
-                        </>
-                    ) : (
-                        <div className="h-full flex-grow w-[600px] grid place-items-center ">
-                            <span>
-                                <Icon
-                                    icon="magnifier"
-                                    className="w-28 h-28 fill-slate-900"
-                                />
-                                <p className="text-xl font-secondary mt-3 mb-24">
-                                    No search results...
-                                </p>
-                            </span>
                         </div>
-                    )}
-                </div>
+                    </>
+                )}
             </div>
 
             {/* show recipe */}
@@ -147,6 +228,15 @@ export default function Home({ user }: HomeProps) {
                     setEditRecipe={() => nada()}
                     recipe={recipe}
                     edit={false}
+                />
+            )}
+
+            {selectIngredients && (
+                <AddIngredient
+                    setAddIngredients={setSelectIngredients}
+                    submit={submitIngredients}
+                    ingredientsList={ingredientsList}
+                    loadFridge={true}
                 />
             )}
         </>
