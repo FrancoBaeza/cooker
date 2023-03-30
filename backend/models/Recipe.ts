@@ -48,6 +48,11 @@ const RecipeSchema = new mongoose.Schema({
 RecipeSchema.pre(/^find/, function (next) {
     this.select("-__v");
 
+    this.populate({
+        path: "ingredients",
+        select: "-__v",
+    });
+
     next();
 });
 

@@ -5,21 +5,26 @@ import Icon from "../Icon";
 import { useAlertStore } from "@/stores/alertStore";
 import { useIngredientStore } from "@/stores/ingredientStore";
 import * as api from "@/utils/api";
+import { useUserStore } from "@/stores/userStore";
 
 interface ShowProps {
     recipe: Recipe;
     setShowRecipe: (op: boolean) => void;
     setEditRecipe: (op: boolean) => void;
+    edit: boolean;
 }
 
 export default function Show({
     recipe,
     setShowRecipe,
     setEditRecipe,
+    edit,
 }: ShowProps) {
+    console.log(recipe)
     const [start, setStart] = useState(false);
 
-    console.log(recipe);
+    const fetchUserRecipes = useUserStore((state) => state.fetchUserRecipes);
+    const user = useUserStore((state) => state.user);
 
     // setting the start state to true
     useEffect(() => {
@@ -48,8 +53,8 @@ export default function Show({
     // delete the ingredient
     const deleteRecipe = async () => {
         try {
-            // await api.deleteRecipe(ingredient._id);
-            // await fetchRecipes();
+            await api.deleteRecipe(recipe._id);
+            if (user) await fetchUserRecipes(user._id);
             close();
             setAlert("Recipe deleted successfully", "danger");
         } catch (error) {
@@ -91,38 +96,28 @@ export default function Show({
                     {recipe.ingredients.map((ingre) => (
                         <div
                             key={ingre._id}
-                            className=" flex justify-between w-full bg-gray-300 border-gray-400 text-sm border-2 px-2 py-0.5 rounded-md font-primary text-slate-500 font-medium "
+                            className=" flex justify-between w-full bg-gray-300 border-gray-400 text-sm border-2 px-2 py-1 rounded-md font-primary text-slate-500 font-medium "
                         >
                             {ingre.name}
-                            {/* <button
-                                onClick={() =>
-                                    setIngredientsList(
-                                        ingredientsList.filter(
-                                            (i) => i !== ingre._id
-                                        )
-                                    )
-                                }
-                                className=" px-1 py-0.5 rounded bg-red-500 border-red-600 border-2 hover:bg-red-600 duration-300"
-                            >
-                                <Icon icon="trashcan" className="w-3" />
-                            </button> */}
                         </div>
                     ))}
                 </div>
-                <div className=" w-full flex-grow items-end flex justify-center gap-2">
-                    <button
-                        onClick={deleteRecipe}
-                        className="w-[70px] bg-red-500 border-2 border-red-600 rounded-md font-primary font-semibold text-sm text-slate-200 shadow-md duration-300 hover:bg-red-600 "
-                    >
-                        Delete
-                    </button>
-                    <button
-                        onClick={editRecipe}
-                        className="w-[70px] bg-blue-500 border-2 border-blue-600 rounded-md font-primary font-semibold text-sm text-slate-200 shadow-md duration-300 hover:bg-blue-600 "
-                    >
-                        Edit
-                    </button>
-                </div>
+                {edit && (
+                    <div className=" w-full flex-grow items-end flex justify-center gap-2">
+                        <button
+                            onClick={deleteRecipe}
+                            className="w-[70px] bg-red-500 border-2 border-red-600 rounded-md font-primary font-semibold text-sm text-slate-200 shadow-md duration-300 hover:bg-red-600 "
+                        >
+                            Delete
+                        </button>
+                        <button
+                            onClick={editRecipe}
+                            className="w-[70px] bg-blue-500 border-2 border-blue-600 rounded-md font-primary font-semibold text-sm text-slate-200 shadow-md duration-300 hover:bg-blue-600 "
+                        >
+                            Edit
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );

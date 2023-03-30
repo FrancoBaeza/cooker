@@ -192,3 +192,38 @@ export const updateRecipe = async (data: object, id: string) => {
 
     return value;
 }
+
+export const deleteRecipe = async (id: string) => {
+    const response = await fetch(`${port}/api/recipes/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+
+    if (response.status !== 204) {
+        console.log(response)
+        console.log(`[${new Date().toLocaleString()}]- Fail to delete recipe (api call): ${response.status} - ${response.statusText}`)
+        return Promise.reject(response);
+    }
+
+    return 'Success';
+}
+
+export const getRecipes = async () => {
+    const response = await fetch(`${port}/api/recipes`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+
+    const value = await response.json();
+
+    if (response.status !== 200) {
+        console.log(`[${new Date().toLocaleString()}]- Fail to get all recipes (api call): ${response.status} - ${response.statusText}`)
+        return Promise.reject(value);
+    }
+
+    return value;
+}

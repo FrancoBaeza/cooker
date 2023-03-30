@@ -10,6 +10,8 @@ interface UserState {
     user: User | null;
     fetchUser: (id: string) => Promise<User>;
     fetchUserRecipes: (id: string) => Promise<Ingredient[]>;
+    setUserRecipes: (recipes: Recipe[]) => void;
+    setUser: (user: User) => void;
 }
 
 export const useUserStore = create<UserState>()(
@@ -25,9 +27,15 @@ export const useUserStore = create<UserState>()(
             },
             fetchUserRecipes: async (id: string) => {
                 const recipes = await api.getUserRecipes(id);
-                set({ userRecipes: recipes.data.recipes, userRecipesSeted: true });
                 console.log('recipes', recipes.data.recipes)
+                set({ userRecipes: recipes.data.recipes, userRecipesSeted: true });
                 return recipes.data.data;
+            },
+            setUserRecipes: (recipes: Recipe[]) => {
+                set({ userRecipes: recipes });
+            },
+            setUser: (user: User) => {
+                set({ user });
             }
         })
     )

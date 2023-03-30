@@ -16,10 +16,8 @@ import Edit from "./Edit";
 
 export default function Recipes({
     user,
-    userRecipes,
 }: {
     user: User;
-    userRecipes: Recipe[];
 }) {
     const [filter, setFilter] = useState("recipes");
     const [recipe, setRecipe] = useState({} as Recipe);
@@ -79,9 +77,25 @@ export default function Recipes({
         }
     };
 
-    const nada = () => {
-        console.log("nada");
-    };
+    const userRecipes = useUserStore((state) => state.userRecipes);
+    const setUserRecipes = useUserStore((state) => state.setUserRecipes);
+
+    useEffect(() => {
+        if(userRecipes.length === 0){
+            
+            const fetchUserRecipes = async () => {
+                try {
+                    const recipes = await api.getUserRecipes(user._id);
+                    setUserRecipes(recipes.data.recipes);
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+            fetchUserRecipes();
+        }
+    }, []);
+
+
 
     return (
         <>
@@ -318,6 +332,7 @@ export default function Recipes({
                     setShowRecipe={setShowRecipe}
                     setEditRecipe={setEditRecipe}
                     recipe={recipe}
+                    edit={true}
                 />
             )}
 
@@ -327,6 +342,7 @@ export default function Recipes({
                     setShowRecipe={setShowRecipe}
                     setEditRecipe={setEditRecipe}
                     recipe={recipe}
+                    closeView={() => setShowRecipe(false)}
                 />
             )}
         </>

@@ -7,10 +7,20 @@ import Recipes from "@/components/recipes/Recipes";
 import Ingredients from "@/components/ingredients/Ingredients";
 import * as api from "@/utils/api";
 import { withSessionSsr } from "@/utils/withSession";
+import { useUserStore } from "@/stores/userStore";
 
 
 const Account: NextPageWithLayout = ({ user, userRecipes }: any) => {
     const [filter, setFilter] = useState("recipes");
+
+    const userInStore = useUserStore((state) => state.user);
+    const setUser = useUserStore((state) => state.setUser);
+
+    useEffect(() => {
+        if (!userInStore) {
+            setUser(user);
+        }
+    }, []);
     
     return (
         <div className="flex flex-col items-center min-h-screen">
@@ -45,7 +55,7 @@ const Account: NextPageWithLayout = ({ user, userRecipes }: any) => {
                 </div>
             </div>
             <div className="w-[600px] flex flex-col items-center p-5">
-                {filter === "recipes" && <Recipes user={user} userRecipes={userRecipes} />}
+                {filter === "recipes" && <Recipes user={user} />}
                 {filter === "ingredients" && <Ingredients />}
             </div>
         </div>
