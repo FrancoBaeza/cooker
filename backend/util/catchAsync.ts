@@ -4,7 +4,7 @@ const catchAsync = (fn: Function) => (req: NextApiRequest, res: NextApiResponse)
   fn(req, res).catch((err: any) => {
 
 
-    console.log('Estoy en el catck async --------------------')
+    console.log('Estoy en el catck async -------------------- (err):')
     console.log(err)
 
     if(err.appError){

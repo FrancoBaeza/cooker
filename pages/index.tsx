@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import Link from 'next/link';
+
 
 import Icon from "@/components/Icon";
 import Result from "@/components/Result";
@@ -44,7 +46,14 @@ export default function Home({ user }: HomeProps) {
         <>
             <div className="flex flex-col items-center min-h-screen">
                 {/* header */}
-                <div className="h-[300px] w-full bg-base-primary flex flex-col items-center text-slate-200 py-10">
+                <div className="h-[300px] w-full bg-base-primary flex flex-col items-center text-slate-200 ">
+                    <Link href='/account' className="self-end p-0 m-2 mb-6">
+                        <Icon
+                            icon="user"
+                            className="h-8 w-8 cursor-pointer hover:fill-slate-500 duration-300 fill-slate-200"
+                        />
+                    </Link>
+
                     <h1 className=" text-4xl font-primary font-semibold">
                         What do you want to eat?
                     </h1>

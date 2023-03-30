@@ -1,14 +1,15 @@
+import Link from "next/link";
 import type { NextPageWithLayout } from "./_app";
-import Layout from "@/components/Layout";
 import { ReactElement, useEffect } from "react";
 import { useState } from "react";
 
+import Layout from "@/components/Layout";
 import Recipes from "@/components/recipes/Recipes";
 import Ingredients from "@/components/ingredients/Ingredients";
 import * as api from "@/utils/api";
 import { withSessionSsr } from "@/utils/withSession";
 import { useUserStore } from "@/stores/userStore";
-
+import Icon from "@/components/Icon";
 
 const Account: NextPageWithLayout = ({ user, userRecipes }: any) => {
     const [filter, setFilter] = useState("recipes");
@@ -21,10 +22,16 @@ const Account: NextPageWithLayout = ({ user, userRecipes }: any) => {
             setUser(user);
         }
     }, []);
-    
+
     return (
         <div className="flex flex-col items-center min-h-screen">
-            <div className="h-[250px] w-full bg-base-primary flex flex-col items-center text-slate-200 py-10">
+            <div className="h-[250px] w-full bg-base-primary flex flex-col items-center text-slate-200">
+                <Link href="/" className="self-start p-0 m-2 mb-6">
+                    <Icon
+                        icon="thickArrow"
+                        className="h-8 w-8 cursor-pointer hover:fill-slate-500 duration-300 fill-slate-200"
+                    />
+                </Link>
                 <h1 className=" text-4xl font-primary font-semibold">
                     Your account
                 </h1>
@@ -71,7 +78,7 @@ export default Account;
 export const getServerSideProps = withSessionSsr(
     async function getServerSideProps({ req }) {
         const id = req.session.user?.userId;
-        if(id){
+        if (id) {
             const user = await api.getUser(id);
             const userRecipes = await api.getUserRecipes(id);
             return {
@@ -80,7 +87,6 @@ export const getServerSideProps = withSessionSsr(
                     userRecipes: userRecipes.data.recipes,
                 },
             };
-
         } else {
             return {
                 redirect: {
