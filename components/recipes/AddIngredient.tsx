@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { TailSpin } from "react-loader-spinner";
 
 import { useIngredientStore } from "@/stores/ingredientStore";
+import { useUserStore } from "@/stores/userStore";
 import SelectIngredient from "./SelectIngredient";
 import { Ingredient } from "@/utils/types";
 import Icon from "../Icon";
@@ -30,7 +31,7 @@ export default function AddIngredient({
         [] as Ingredient[]
     );
     const [addIngredientsFilter, setAddIngredientsFilter] = useState("");
-
+    const user = useUserStore((state) => state.user);
     // getting all the ingredients
     useEffect(() => {
         // if i already setead the ingredients i dont need to get them again
@@ -73,6 +74,17 @@ export default function AddIngredient({
             (i) => i._id !== id
         );
         setAddedIngredients(newAddedIngredients);
+    };
+
+    console.log(user, 'user' )
+
+    const loadUserFridge = () => {
+        if (user) {
+            const added = ingredients.filter((i) =>
+                user.fridge.find((f) => f._id === i._id) 
+            );
+            setAddedIngredients(added);
+        }
     };
 
     return (
@@ -158,8 +170,7 @@ export default function AddIngredient({
                         {loadFridge && (
                             <button
                                 onClick={() => {
-                                    submit(addedIngredients);
-                                    close();
+                                    loadUserFridge();
                                 }}
                                 className=" w-[100px] border-2 border-blue-600 bg-blue-500 px-2 font-semibold text-sm text-slate-200 font-primary rounded-md duration-300 hover:bg-blue-600"
                             >

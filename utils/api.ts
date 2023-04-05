@@ -58,6 +58,25 @@ export const getUser = async (id: string) => {
     return value;
 }
 
+export const updateUserFridge = async (data: object, id: string) => {
+    const response = await fetch(`${port}/api/users/${id}/fridge`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+
+    const value = await response.json();
+
+    if (response.status !== 200) {
+        console.log(`[${new Date().toLocaleString()}]- Fail to update user's fridge (api call): ${response.status} - ${response.statusText}`)
+        return Promise.reject(value);
+    }
+
+    return value;
+}
+
 ///////////////////////// INGREDIENTS
 
 export const createIngredient = async (data: object) => {

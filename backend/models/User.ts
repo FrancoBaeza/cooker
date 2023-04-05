@@ -2,10 +2,12 @@ import mongoose from 'mongoose'
 import validator from 'validator';
 import _ from 'lodash'
 import bcrypt from 'bcrypt';
+import { Ingredient, Recipe } from '@/utils/types';
 
 interface IUser {
     name: string;
     email: string;
+    fridge: Ingredient[];
     password: string;
     passwordConfirm?: string;
     active: boolean;
@@ -22,6 +24,15 @@ const UserSchema = new mongoose.Schema<IUser>({
         unique: true,
         lowercase: true,
         validate: [validator.isEmail, 'Please insert a valid email'],
+    },
+    fridge: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Ingredient",
+            },
+        ],
+        default: [],
     },
     password: {
         type: String,
@@ -56,6 +67,19 @@ UserSchema.pre('save', async function (next) {
     this.name = _.startCase(this.name);
     this.password = await bcrypt.hash(this.password, 12);
     this.passwordConfirm = undefined;
+    next();
+});
+
+UserSchema.pre(/^find/, function (next) {
+    this.find({ active: { $ne: false } });
+
+    console.log("pre find --------------------------------------------------------------------")
+
+    this.populate({
+        path: 'fridge',
+        select: '-__v',
+    });
+
     next();
 });
   

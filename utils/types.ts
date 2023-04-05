@@ -16,6 +16,7 @@ export interface User {
 	_id: string;
 	name: string;
 	email: string;
+	fridge: Recipe[]
 }
 
 export interface Recipe {

@@ -10,12 +10,9 @@ import { useRecipeStore } from "@/stores/recipeStore";
 import { useIngredientStore } from "@/stores/ingredientStore";
 import Show from "@/components/recipes/Show";
 import AddIngredient from "@/components/recipes/AddIngredient";
+import { useUserStore } from "@/stores/userStore";
 
-interface HomeProps {
-    user?: User;
-}
-
-export default function Home({ user }: HomeProps) {
+export default function Home({ userId }: any) {
     const [filter, setFilter] = useState("name");
     const [search, setSearch] = useState("");
     const [selectIngredients, setSelectIngredients] = useState(false);
@@ -25,6 +22,8 @@ export default function Home({ user }: HomeProps) {
     const [showRecipe, setShowRecipe] = useState(false);
     const [recipe, setRecipe] = useState({} as Recipe);
 
+    const [showDDMenu, setShowDDMenu] = useState(false);
+
     const recipes = useRecipeStore((state) => state.recipes);
     const fetchRecipes = useRecipeStore((state) => state.fetchRecipes);
 
@@ -33,9 +32,24 @@ export default function Home({ user }: HomeProps) {
         (state) => state.fetchIngredients
     );
 
+    const user = useUserStore((state) => state.user);
+    const setUser = useUserStore((state) => state.setUser);
+
     useEffect(() => {
         fetchRecipes();
         fetchIngredients();
+
+        if (!user) {
+            const getUser = async () => {
+                try {
+                    const user = await api.getUser(userId);
+                    setUser(user.data.data);
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+            getUser();
+        }
     }, []);
 
     const searchRecipes = () => {
@@ -63,21 +77,44 @@ export default function Home({ user }: HomeProps) {
         setFilter(filter);
     };
 
-    const nada = () => {
-        console.log("nada");
-    };
-
     return (
         <>
             <div className="flex flex-col items-center min-h-screen">
                 {/* header */}
                 <div className="h-[300px] w-full bg-base-primary flex flex-col items-center text-slate-200 ">
-                    <Link href="/account" className="self-end p-0 m-2 mb-6">
-                        <Icon
-                            icon="user"
-                            className="h-8 w-8 cursor-pointer hover:fill-slate-500 duration-300 fill-slate-200"
-                        />
-                    </Link>
+                    <div className="self-end p-0 m-2 mb-6 relative">
+                        <button
+                            onMouseOver={() => setShowDDMenu(true)}
+                            onClick={() => setShowDDMenu(!showDDMenu)}
+                        >
+                            <Icon
+                                icon="user"
+                                className="h-8 w-8 cursor-pointer hover:fill-slate-400 duration-300 fill-slate-200"
+                            />
+                        </button>
+                        {showDDMenu && (
+                            <div
+                                onMouseLeave={() => setShowDDMenu(false)}
+                                className="fixed right-2 flex flex-col w-[120px] bg-slate-200 rounded "
+                            >
+                                <Link
+                                    className=" text-slate-700 font-primary text-sm p-1 font-semibold hover:bg-slate-400/50 duration-300"
+                                    href="/account"
+                                >
+                                    Account
+                                </Link>
+                                <span className="bg-slate-400 h-[1.5px] w-full self-center">
+                                    {" "}
+                                </span>
+                                <Link
+                                    className=" text-slate-700 font-primary text-sm p-1 font-semibold hover:bg-slate-400/50 duration-300"
+                                    href="/myFridge"
+                                >
+                                    My Fridge
+                                </Link>
+                            </div>
+                        )}
+                    </div>
 
                     <h1 className=" text-4xl font-primary font-semibold">
                         What do you want to eat?
@@ -204,18 +241,32 @@ export default function Home({ user }: HomeProps) {
                                 What we found:
                             </h2>
 
-                            <div className="w-[500px] flex flex-col gap-5 mt-5">
-                                {foundRecipes.map((recipe, i) => (
-                                    <Result
-                                        key={i}
-                                        name={recipe.name}
-                                        action={() => {
-                                            setRecipe(recipe);
-                                            setShowRecipe(true);
-                                        }}
-                                    />
-                                ))}
-                            </div>
+                            {foundRecipes.length > 0 ? (
+                                <div className="w-[500px] flex flex-col gap-5 mt-5">
+                                    {foundRecipes.map((recipe, i) => (
+                                        <Result
+                                            key={i}
+                                            name={recipe.name}
+                                            action={() => {
+                                                setRecipe(recipe);
+                                                setShowRecipe(true);
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="h-full flex-grow w-[600px] mt-4 grid place-items-center ">
+                                    <span className="flex flex-col justify-center items-center">
+                                        <Icon
+                                            icon="magnifier"
+                                            className="w-24 h-24 fill-slate-900"
+                                        />
+                                        <p className="text-xl font-secondary mt-3 mb-24">
+                                            No search results...
+                                        </p>
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </>
                 )}
@@ -225,7 +276,7 @@ export default function Home({ user }: HomeProps) {
             {showRecipe && (
                 <Show
                     setShowRecipe={setShowRecipe}
-                    setEditRecipe={() => nada()}
+                    setEditRecipe={() => {}}
                     recipe={recipe}
                     edit={false}
                 />
@@ -242,3 +293,23 @@ export default function Home({ user }: HomeProps) {
         </>
     );
 }
+
+export const getServerSideProps = withSessionSsr(
+    async function getServerSideProps({ req }) {
+        const id = req.session.user?.userId;
+        if (id) {
+            return {
+                props: {
+                    userId: id,
+                },
+            };
+        } else {
+            return {
+                redirect: {
+                    destination: "/login",
+                    permanent: false,
+                },
+            };
+        }
+    }
+);

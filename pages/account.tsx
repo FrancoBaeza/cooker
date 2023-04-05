@@ -13,6 +13,7 @@ import Icon from "@/components/Icon";
 
 const Account: NextPageWithLayout = ({ user, userRecipes }: any) => {
     const [filter, setFilter] = useState("recipes");
+    const [showDDMenu, setShowDDMenu] = useState(false);
 
     const userInStore = useUserStore((state) => state.user);
     const setUser = useUserStore((state) => state.setUser);
@@ -26,12 +27,46 @@ const Account: NextPageWithLayout = ({ user, userRecipes }: any) => {
     return (
         <div className="flex flex-col items-center min-h-screen">
             <div className="h-[250px] w-full bg-base-primary flex flex-col items-center text-slate-200">
-                <Link href="/" className="self-start p-0 m-2 mb-6">
+                <Link href="/" className="self-start absolute p-0 m-2 mb-6">
                     <Icon
                         icon="thickArrow"
                         className="h-8 w-8 cursor-pointer hover:fill-slate-500 duration-300 fill-slate-200"
                     />
                 </Link>
+
+                <div className="self-end p-0 m-2 mb-6 relative">
+                        <button
+                            onMouseOver={() => setShowDDMenu(true)}
+                            onClick={() => setShowDDMenu(!showDDMenu)}
+                        >
+                            <Icon
+                                icon="user"
+                                className="h-8 w-8 cursor-pointer hover:fill-slate-400 duration-300 fill-slate-200"
+                            />
+                        </button>
+                        {showDDMenu && (
+                            <div
+                                onMouseLeave={() => setShowDDMenu(false)}
+                                className="fixed right-2 flex flex-col w-[120px] bg-slate-200 rounded "
+                            >
+                                <Link
+                                    className=" text-slate-700 font-primary text-sm p-1 font-semibold hover:bg-slate-400/50 duration-300"
+                                    href="/account"
+                                >
+                                    Account
+                                </Link>
+                                <span className="bg-slate-400 h-[1.5px] w-full self-center">
+                                    {" "}
+                                </span>
+                                <Link
+                                    className=" text-slate-700 font-primary text-sm p-1 font-semibold hover:bg-slate-400/50 duration-300"
+                                    href="/myFridge"
+                                >
+                                    My Fridge
+                                </Link>
+                            </div>
+                        )}
+                    </div>
                 <h1 className=" text-4xl font-primary font-semibold">
                     Your account
                 </h1>
