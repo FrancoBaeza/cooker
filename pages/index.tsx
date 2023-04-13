@@ -6,6 +6,7 @@ import Result from "@/components/Result";
 import { withSessionSsr } from "@/utils/withSession";
 import { Ingredient, Recipe, User } from "@/utils/types";
 import * as api from "@/utils/api";
+import * as gptApi from "@/utils/chatGptApi";
 import { useRecipeStore } from "@/stores/recipeStore";
 import { useIngredientStore } from "@/stores/ingredientStore";
 import Show from "@/components/recipes/Show";
@@ -35,6 +36,7 @@ export default function Home({ userId }: any) {
     const user = useUserStore((state) => state.user);
     const setUser = useUserStore((state) => state.setUser);
 
+    // busca las recetas e ingredientes y si no hay usuario busca el usuario
     useEffect(() => {
         fetchRecipes();
         fetchIngredients();
@@ -75,6 +77,25 @@ export default function Home({ userId }: any) {
     const correctFilter = (filter: string) => {
         setFoundRecipes([]);
         setFilter(filter);
+    };
+
+    const chatGptSearch = async () => {
+        console.log("searching...");
+        const ingredientListTodo = ingredients.filter((ing) =>
+            ingredientsList.find((i) => i === ing._id)
+        );
+        const response = await gptApi.getSuggestions(ingredientListTodo);
+        const recipesResponse = JSON.parse(response.choices[0].message.content);
+        console.log("recipesResponse: ", recipesResponse);
+        const recipesWithCompleteIngredients = recipesResponse.recetas.map((recipe: Recipe) => {
+            const ingredientsAux = recipe.ingredients.map((ing) => {
+                const ingredient = ingredients.find((i) => i.name.toLowerCase() === ing.toString().toLowerCase());
+                return ingredient;
+            });
+            return { ...recipe, ingredients: ingredientsAux };
+        } );
+        console.log('Recipes after completition: ', recipesWithCompleteIngredients)
+        setFoundRecipes(recipesWithCompleteIngredients);
     };
 
     return (
@@ -217,6 +238,12 @@ export default function Home({ userId }: any) {
                                 className="mt-4 bg-slate-400 border-2 border-slate-500 px-3 py-1 font-primary rounded text-slate-200 hover:bg-slate-500 duration-300"
                             >
                                 Select ingredients
+                            </button>
+                            <button
+                                onClick={() => chatGptSearch()}
+                                className="bg-green-500 border-2 border-green-600 px-3 py-1 font-primary rounded text-slate-200 hover:bg-green-600 duration-300"
+                            >
+                                Discover
                             </button>
 
                             <div className="w-full flex flex-wrap gap-2">

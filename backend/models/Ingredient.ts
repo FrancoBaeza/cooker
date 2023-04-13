@@ -7,7 +7,6 @@ const IngredientSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: [true, "Please provide a description"],
     },
     // image: {
     //     type: String,

@@ -20,7 +20,7 @@ export default function Show({
     setEditRecipe,
     edit,
 }: ShowProps) {
-    console.log(recipe)
+    console.log('Recipe recived by SHOW:', recipe)
     const [start, setStart] = useState(false);
 
     const fetchUserRecipes = useUserStore((state) => state.fetchUserRecipes);
