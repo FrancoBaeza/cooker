@@ -4,6 +4,7 @@ import _ from 'lodash'
 import jsonwebtoken from 'jsonwebtoken';
 
 import User from '../models/User'
+import catchAsync from "../util/catchAsync";
 
 declare module "iron-session" {
     interface IronSessionData {
@@ -21,7 +22,7 @@ const signToken = (id: string) => {
     });
 };
 
-export const registerUser = async (req: NextApiRequest, res: NextApiResponse) => {
+export const registerUser = catchAsync( async (req: NextApiRequest, res: NextApiResponse) => {
     const { name, email, password, passwordConfirm } = req.body;
 
     // 1) Correct the names because user might be stupid
@@ -39,7 +40,7 @@ export const registerUser = async (req: NextApiRequest, res: NextApiResponse) =>
 
     // 3) Send response
     res.status(201).json({status: 'Sucess', data: { user }});
-}
+})
 
 export const loginUser = async (req: NextApiRequest, res: NextApiResponse) => {
     const { email, password } = req.body;

@@ -32,68 +32,14 @@ const Login: NextPageWithLayout = () => {
     return (
         <div className=" h-screen bg-[#E0E0E0] flex flex-col gap-3 items-center justify-center ">
             <div className="bg-slate-200 w-[700px] h-[500px] flex flex-row items-center rounded-md shadow-lg">
-                {/* logo */}
+                {/* green side */}
                 <div className=" rounded-l-md bg-login-food-banner bg-base-primary w-2/5 h-full">
-                    {/* <p className="pl-4 pt-4">
-                        <svg
-                        width="200.1111145019531"
-                        height="55.83783608022537"
-                        viewBox="0 0 370.3333333333333 97.47223041675707"
-                        className="css-1j8o68f"
-                        >
-                        <defs id="SvgjsDefs2624">
-                            <linearGradient id="SvgjsLinearGradient2629">
-                            <stop
-                                id="SvgjsStop2630"
-                                stopColor="#006838"
-                                offset="0"
-                            ></stop>
-                            <stop
-                                id="SvgjsStop2631"
-                                stopColor="#96cf24"
-                                offset="1"
-                            ></stop>
-                            </linearGradient>
-                        </defs>
-                        <g
-                            id="SvgjsG2625"
-                            // featurekey="pxMwYC-0"
-                            // transhtmlForm="matrix(1.3425925925925923,0,0,1.3425925925925923,-12.08333333333333,-11.680555299476339)"
-                            fill="url(#SvgjsLinearGradient2629)"
-                        >
-                            <polygon
-                            xmlns="http://www.w3.org/2000/svg"
-                            points="71,48.7 71,18.2 54.8,9 38.7,9 63,22.8 63,36.7 63,53.3 "
-                            ></polygon>
-                            <polygon
-                            xmlns="http://www.w3.org/2000/svg"
-                            points="29,66 54.8,81 54.7,81 55.1,81.3 71.7,71.7 79.7,57.8 55.3,72 29,56.8 "
-                            ></polygon>
-                            <polygon
-                            xmlns="http://www.w3.org/2000/svg"
-                            points="61.2,57 61.3,57 46.9,65.2 54.8,69.8 81,54.5 81,35.2 73,21.3 73,49.8 "
-                            ></polygon>
-                            <polygon
-                            xmlns="http://www.w3.org/2000/svg"
-                            points="61,23.9 34.8,8.7 18.2,18.3 10.2,32.3 35,18 47,25 46.8,25 61,33.2 "
-                            ></polygon>
-                            <polygon
-                            xmlns="http://www.w3.org/2000/svg"
-                            points="35.2,20.3 9,35.6 9,54.8 17,68.7 17,40.2 28.8,33.2 28.8,33.2 43.2,24.9 "
-                            ></polygon>
-                            <polygon
-                            xmlns="http://www.w3.org/2000/svg"
-                            points="19,41.3 19,71.8 35.2,81 51.4,81 27,67.2 27,53.3 27,36.7 "
-                            ></polygon>
-                        </g>
-                        
-                        </svg>
-                    </p> */}
+                    
                 </div>
                 <div className="w-3/5 h-full flex flex-col px-8">
                     <h1 className="mt-10 font-semibold text-xl">
                         Welcome back to{" "}
-                        <strong className="text-primary_green">Cooker</strong>
+                        <strong className="text-base-secondary">Cooker</strong>
                     </h1>
                     <p className=" py-5 text-sm">
                         Lorem ipsum dolor st amet, consectetur adipiscing elit,

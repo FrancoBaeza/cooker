@@ -5,7 +5,6 @@ const catchAsync = (fn: Function) => (req: NextApiRequest, res: NextApiResponse)
 
 
     console.log('Estoy en el catck async -------------------- (err):')
-    console.log(err)
 
     if(err.appError){
 
@@ -13,11 +12,12 @@ const catchAsync = (fn: Function) => (req: NextApiRequest, res: NextApiResponse)
       res.status(err.statusCode).json({ status: err.status, message: err.message });
 
     } else {
-
-      const message = err.errors.description.message;
-      const path = err.errors.description.properties.path;
-
-      res.status(400).json({ status: 'error', message, path });
+      const errors: object[] = [];
+      for(let key in err.errors){
+        errors.push({ [key]: err.errors[key].message });
+      }
+      console.log('Devolviendo errores')
+      res.status(400).json({ status: 'error', errors });
     }
   });
 };

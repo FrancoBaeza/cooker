@@ -13,7 +13,12 @@ import Show from "@/components/recipes/Show";
 import AddIngredient from "@/components/recipes/AddIngredient";
 import { useUserStore } from "@/stores/userStore";
 
-export default function Home({ userId }: any) {
+import type { NextPageWithLayout } from "./_app";
+import Layout from "@/components/Layout";
+import type { ReactElement } from "react";
+
+
+const Home: NextPageWithLayout = ({ userId }: any) => {
     const [filter, setFilter] = useState("name");
     const [search, setSearch] = useState("");
     const [selectIngredients, setSelectIngredients] = useState(false);
@@ -340,3 +345,9 @@ export const getServerSideProps = withSessionSsr(
         }
     }
 );
+
+Home.getLayout = function getLayout(page: ReactElement) {
+    return <Layout>{page}</Layout>;
+};
+
+export default Home;
