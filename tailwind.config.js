@@ -20,12 +20,15 @@ module.exports = {
                 "200-primary": "#0E6624",
                 "base-secondary": "#00718F",
                 "base-secondary2": "#157D9D",
+
+                "base-gray": "#7F7F87",
+                "400-gray": "#5F5F67",
             },
             backgroundImage: {
                 main: `linear-gradient(70deg, rgba(93, 140, 212, 1)  2%, rgba(93, 178, 212, 1)  52%, rgba(224,224,224,1) 52%)`,
             },
             fontFamily: {
-                "primary": ["Raleway", "sans-serif"],
+                "primary": ["Inter", "sans-serif"],
                 "secondary": ["Oswald", "sans-serif"],
             },
         },

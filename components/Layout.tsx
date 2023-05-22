@@ -8,12 +8,16 @@ import { useAlertStore } from "@/stores/alertStore";
 import Alert from "./Alert";
 import Icon from "./Icon";
 import Link from "next/link";
+import SideBarContent from "./SideBarContent";
+import { useRouter } from "next/router";
 
 export default function Layout(props: PropsWithChildren) {
     const { promiseInProgress } = usePromiseTracker();
 
     const [sideBarOpen, setSideBarOpen] = useState(true);
     const [sideBarFullyOpen, setSideBarFullyOpen] = useState(false);
+
+    const router = useRouter();
 
     // get the alert store properties
     const alertActive = useAlertStore((state) => state.active);
@@ -49,38 +53,97 @@ export default function Layout(props: PropsWithChildren) {
             )}
 
             {/* main */}
-            <main className="h-full flex flex-col">
+            <main className="max-h-screen h-screen flex flex-col">
                 {/* top bar */}
                 <span className="w-screen h-[10px] bg-[#00718F]"></span>
-                <div className="flex w-full">
+                <div className="h-[90p] flex-grow flex w-full">
                     {/* sidebar */}
-                    <div className="flex w-[290px] w-full bg-[#00718F]">
+                    <div className="flex w-[290px] bg-[#00718F]">
                         {/* thin sidebar */}
-                        <div className="w-[70px] flex flex-col items-center justify-between">
+                        <div className="w-[70px] pb-3 flex flex-col items-center justify-between">
                             <div className="flex flex-col gap-10">
                                 <span className="w-[40px] h-[40px] rounded-md cursor-pointer bg-nice-white"></span>
                                 <div className="flex flex-col gap-3">
-
-                                    <Link href={`/`} className="w-[40px] h-[40px] rounded-md cursor-pointer grid place-content-center hover:bg-[#6FC5DC]/60 duration-300">
-                                        <Icon icon="home" className="w-6 fill-slate-200" />
+                                    <Link
+                                        href={`/`}
+                                        className={`w-[40px] h-[40px] rounded-md cursor-pointer grid place-content-center ${
+                                            router.pathname === "/"
+                                                ? "bg-[#6FC5DC]/60"
+                                                : "hover:bg-[#6FC5DC]/60"
+                                        } duration-300`}
+                                    >
+                                        <Icon
+                                            icon="home"
+                                            className="w-6 fill-slate-200"
+                                        />
                                     </Link>
-                                    <Link href={`/ingredients`} className="w-[40px] h-[40px] rounded-md cursor-pointer grid place-content-center hover:bg-[#6FC5DC]/60 duration-300">
-                                        <Icon icon="ingredient" className="w-7 fill-slate-200" />
+                                    <Link
+                                        href={`/ingredients`}
+                                        className={`w-[40px] h-[40px] rounded-md cursor-pointer grid place-content-center ${
+                                            router.pathname === "/ingredients"
+                                                ? "bg-[#6FC5DC]/60"
+                                                : "hover:bg-[#6FC5DC]/60"
+                                        } duration-300`}
+                                    >
+                                        <Icon
+                                            icon="ingredient"
+                                            className="w-7 fill-slate-200"
+                                        />
                                     </Link>
-                                    <Link href={`/recipes`} className="w-[40px] h-[40px] rounded-md cursor-pointer grid place-content-center hover:bg-[#6FC5DC]/60 duration-300">
-                                        <Icon icon="recipe" className="w-6 fill-slate-200" />
+                                    <Link
+                                        href={`/recipes`}
+                                        className={`w-[40px] h-[40px] rounded-md cursor-pointer grid place-content-center ${
+                                            router.pathname === "/recipes"
+                                                ? "bg-[#6FC5DC]/60"
+                                                : "hover:bg-[#6FC5DC]/60"
+                                        } duration-300`}
+                                    >
+                                        <Icon
+                                            icon="recipe"
+                                            className="w-6 fill-slate-200"
+                                        />
                                     </Link>
-                                    <Link href={`/account/myFridge`} className="w-[40px] h-[40px] rounded-md cursor-pointer grid place-content-center hover:bg-[#6FC5DC]/60 duration-300">
-                                        <Icon icon="fridge" className="w-8 fill-slate-200" />
+                                    <Link
+                                        href={`/account/myFridge`}
+                                        className={`w-[40px] h-[40px] rounded-md cursor-pointer grid place-content-center ${
+                                            router.pathname ===
+                                            "/account/myFridge"
+                                                ? "bg-[#6FC5DC]/60"
+                                                : "hover:bg-[#6FC5DC]/60"
+                                        } duration-300`}
+                                    >
+                                        <Icon
+                                            icon="fridge"
+                                            className="w-8 fill-slate-200"
+                                        />
                                     </Link>
                                 </div>
                             </div>
 
-                            <div className="rounded-full w-[35px] h-[35px] bg-nice-white"></div>
+                            <div className="w-full flex flex-col items-center px-3 gap-4">
+                                <Link
+                                    href={`/settings`}
+                                    className={`w-[40px] h-[40px] rounded-md cursor-pointer grid place-content-center ${
+                                        router.pathname === "/settings"
+                                            ? "bg-[#6FC5DC]/60"
+                                            : "hover:bg-[#6FC5DC]/60"
+                                    } duration-300`}
+                                >
+                                    <Icon
+                                        icon="settings"
+                                        className="w-6 fill-slate-200"
+                                    />
+                                </Link>
+
+                                <span className="w-full h-[2px] bg-nice-white"></span>
+                                <div className="rounded-full w-[40px] h-[40px] bg-nice-white"></div>
+                            </div>
                         </div>
 
                         {/* thick sidebar */}
-                        <div className="w-[220px] bg-[#5299B6] rounded-tl-[30px]"></div>
+                        <div className="w-[250px] bg-[#5299B6] rounded-tl-[30px]">
+                            <SideBarContent />
+                        </div>
                     </div>
                     <div className="flex-grow">{props.children}</div>
                 </div>
