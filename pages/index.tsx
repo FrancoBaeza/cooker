@@ -17,6 +17,7 @@ import { useUserStore } from "@/stores/userStore";
 import type { NextPageWithLayout } from "./_app";
 import Layout from "@/components/Layout";
 import type { ReactElement } from "react";
+import DropDown from "@/components/DropDown";
 
 const Home: NextPageWithLayout = ({ userId }: any) => {
     const [filter, setFilter] = useState("name");
@@ -334,6 +335,12 @@ const Home: NextPageWithLayout = ({ userId }: any) => {
     //     </>
     // );
 
+
+    const [timeFilter, setTimeFilter] = useState("all")
+    const [difficultyFilter, setDifficultyFilter] = useState("all")
+
+    console.log(timeFilter, difficultyFilter)
+
     return (
         <div className="flex flex-col p-5">
             {/* page header breadcum*/}
@@ -350,7 +357,7 @@ const Home: NextPageWithLayout = ({ userId }: any) => {
                 Search recipes
             </h1>
             <div className="w-full p-9 flex flex-col gap-8 ">
-                <div className="flex bg-[#EFEFEF] rounded-md p-8">
+                <div className="grid grid-cols-3 bg-[#EFEFEF] rounded-md p-8">
                     {/* filter div, by name or by ingredients */}
                     <div className="flex flex-col gap-4">
                         {/* selector */}
@@ -378,13 +385,19 @@ const Home: NextPageWithLayout = ({ userId }: any) => {
                         </div>
 
                         {/* input */}
-                        <input type="text" placeholder="Introduce recipe name..." className="w-[600px] h-[40px] bg-[#F6F6F6] text-base-gray rounded-md border-[1px] outline-0 border-base-gray font-primary p-3" />
+                        <input type="text" placeholder="Introduce recipe name..." className="w-full h-[40px] bg-[#F6F6F6] text-base-gray rounded-md border-[1px] outline-0 border-base-gray font-primary p-3 hover:bg-base-gray/10 focus:bg-base-gray/10 duration-300" />
                     </div>
 
                     {/* filter by difficulty */}
-                    <div className="flex flex-col">
-                        <p>Difficulty</p>
+                    <div className="flex items-end justify-center">
+                        <DropDown onChange={setTimeFilter} options={['hola', 'chau', 'bye']} height="h-[40px]" width="w-[160px]" label="Description" />
                     </div>
+
+                    {/* filter by time */}
+                    <div className="flex items-end justify-center">
+                        <DropDown onChange={setDifficultyFilter} options={['hola', 'chau', 'bye']} height="h-[40px]" width="w-[160px]" label="Time" />
+                    </div>
+                    
                 </div>
             </div>
         </div>
