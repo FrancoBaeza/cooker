@@ -20,6 +20,7 @@ export const useRecipeStore = create<RecipeState>()(
             fetchRecipes: async () => {
                 const recipes = await api.getRecipes();
                 set({ recipes: recipes.data.data, seted: true });
+                console.log('hola: ', recipes.data.data)
                 return recipes;
             }
         })

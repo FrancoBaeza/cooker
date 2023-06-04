@@ -117,6 +117,20 @@ export default function Layout(props: PropsWithChildren) {
                                             className="w-8 fill-slate-200"
                                         />
                                     </Link>
+                                    <Link
+                                        href={`/chat`}
+                                        className={`w-[40px] h-[40px] rounded-md cursor-pointer grid place-content-center ${
+                                            router.pathname ===
+                                            "/chat"
+                                                ? "bg-[#6FC5DC]/60"
+                                                : "hover:bg-[#6FC5DC]/60"
+                                        } duration-300`}
+                                    >
+                                        <Icon
+                                            icon="chat"
+                                            className="w-8 fill-slate-200"
+                                        />
+                                    </Link>
                                 </div>
                             </div>
 

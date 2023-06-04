@@ -335,11 +335,25 @@ const Home: NextPageWithLayout = ({ userId }: any) => {
     //     </>
     // );
 
+    const [timeFilter, setTimeFilter] = useState("all");
+    const [difficultyFilter, setDifficultyFilter] = useState("all");
 
-    const [timeFilter, setTimeFilter] = useState("all")
-    const [difficultyFilter, setDifficultyFilter] = useState("all")
+    const [displayResults, setDisplayResults] = useState(true);
+    const [isOpening, setIsOpening] = useState(false);
 
-    console.log(timeFilter, difficultyFilter)
+    const openResults = () => {
+        setDisplayResults(true);
+        setTimeout(() => {
+            setIsOpening(true);
+        }, 200);
+    };
+
+    const closeResults = () => {
+        setIsOpening(false);
+        setTimeout(() => {
+            setDisplayResults(false);
+        }, 200);
+    };
 
     return (
         <div className="flex flex-col p-5">
@@ -357,7 +371,7 @@ const Home: NextPageWithLayout = ({ userId }: any) => {
                 Search recipes
             </h1>
             <div className="w-full p-9 flex flex-col gap-8 ">
-                <div className="grid grid-cols-3 bg-[#EFEFEF] rounded-md p-8">
+                <div className="grid grid-cols-3 bg-[#e3e3e3] rounded-lg p-8">
                     {/* filter div, by name or by ingredients */}
                     <div className="flex flex-col gap-4">
                         {/* selector */}
@@ -385,19 +399,128 @@ const Home: NextPageWithLayout = ({ userId }: any) => {
                         </div>
 
                         {/* input */}
-                        <input type="text" placeholder="Introduce recipe name..." className="w-full h-[40px] bg-[#F6F6F6] text-base-gray rounded-md border-[1px] outline-0 border-base-gray font-primary p-3 hover:bg-base-gray/10 focus:bg-base-gray/10 duration-300" />
+                        <input
+                            type="text"
+                            placeholder="Introduce recipe name..."
+                            className="w-full h-[40px] bg-[#F6F6F6] text-base-gray rounded-md border-[1px] outline-0 border-base-gray font-primary p-3 hover:bg-base-gray/10 focus:bg-base-gray/10 duration-300"
+                        />
                     </div>
 
                     {/* filter by difficulty */}
                     <div className="flex items-end justify-center">
-                        <DropDown onChange={setTimeFilter} options={['hola', 'chau', 'bye']} height="h-[40px]" width="w-[160px]" label="Description" />
+                        <DropDown
+                            onChange={setTimeFilter}
+                            options={["hola", "chau", "bye"]}
+                            height="h-[40px]"
+                            width="w-[160px]"
+                            label="Description"
+                        />
                     </div>
 
                     {/* filter by time */}
                     <div className="flex items-end justify-center">
-                        <DropDown onChange={setDifficultyFilter} options={['hola', 'chau', 'bye']} height="h-[40px]" width="w-[160px]" label="Time" />
+                        <DropDown
+                            onChange={setDifficultyFilter}
+                            options={["hola", "chau", "bye"]}
+                            height="h-[40px]"
+                            width="w-[160px]"
+                            label="Time"
+                        />
                     </div>
-                    
+                </div>
+
+                {/* results*/}
+                <div className="flex flex-col gap-3">
+                    {/* toggle button */}
+                    <button
+                        onClick={displayResults ? closeResults : openResults}
+                        className="flex gap-2 items-center w-fit"
+                    >
+                        <Icon
+                            icon="arrow2"
+                            className={`w-3 fill-base-gray duration-300 ${
+                                displayResults && isOpening
+                                    ? "rotate-90"
+                                    : "-rotate-90"
+                            }`}
+                        />
+                        <p className="font-primary text- font-semibold text-base-gray">
+                            Found recipes
+                        </p>
+                    </button>
+
+                    <div>
+                        {/* table header */}
+                        <div
+                            className={` ${
+                                isOpening
+                                    ? " border-t-[1px] border-x-[1px] rounded-t-lg"
+                                    : "border-[1px] rounded-lg"
+                            } grid grid-cols-5 py-3 px-10 bg-[#e3e3e3]  border-base-gray   duration-300 `}
+                        >
+                            {!isOpening ? (
+                                <p
+                                    className={`font-primary text-base-gray font-medium`}
+                                >
+                                    145 results found...
+                                </p>
+                            ) : (
+                                <>
+                                    <p
+                                        className={`font-primary text-base-gray font-medium`}
+                                    >
+                                        Name
+                                    </p>
+                                    <p
+                                        className={`font-primary text-base-gray font-medium`}
+                                    >
+                                        Description
+                                    </p>
+                                    <p
+                                        className={`font-primary text-base-gray font-medium`}
+                                    >
+                                        Duration
+                                    </p>
+                                    <p
+                                        className={`font-primary text-base-gray font-medium`}
+                                    >
+                                        Difficulty
+                                    </p>
+                                </>
+                            )}
+                        </div>
+
+                        <div
+                            className={`flex flex-col ${
+                                isOpening ? "opacity-1" : "opacity-0"
+                            } duration-300 `}
+                        >
+                            {/* table body */}
+                            {recipes &&
+                                recipes.map((recipe, i) => (
+                                    <div
+                                        key={recipe._id}
+                                        className={`grid grid-cols-5   py-3 px-10 border-base-gray border-x-[1px] border-t-[1px] bg-[#eaeaea] ${
+                                            i === recipes.length - 1 &&
+                                            "rounded-b-lg border-b-[1px]"
+                                        } `}
+                                    >
+                                        <p className="font-primary text-base-gray font-medium">
+                                            {recipe.name}
+                                        </p>
+                                        <p className="font-primary text-base-gray font-medium">
+                                            {recipe.description}
+                                        </p>
+                                        <p className="font-primary text-base-gray font-medium">
+                                            {recipe.duration}
+                                        </p>
+                                        <p className="font-primary text-base-gray font-medium">
+                                            {recipe.difficulty}
+                                        </p>
+                                    </div>
+                                ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
